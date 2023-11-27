@@ -1,10 +1,14 @@
 import styled from '@emotion/styled'
-import { Suspense, useRef, useState } from 'react'
+import { FunctionComponent, Suspense, useRef, useState } from 'react'
 import { AvatarProvider } from './AvatarContext'
 import { AvatarDisplay, AvatarDisplayHandles } from './AvatarDisplay'
 import { AvatarSelector } from './AvatarSelector'
+import { Button, Flex } from 'antd'
 
-export function AvatarEditor() {
+interface IProps {
+    isEditMode: boolean
+}
+export const AvatarEditor: FunctionComponent<IProps> = (props) => {
     const displayRef = useRef<AvatarDisplayHandles | null>(null)
     const [avatarImage, setAvatarImage] = useState<string | undefined>()
 
@@ -24,7 +28,7 @@ export function AvatarEditor() {
     }
 
     const handleSnapshot = async () => {
-        const imageUrl = await await displayRef.current?.getSnapshot()
+        const imageUrl = displayRef.current?.getSnapshot()
         setAvatarImage(imageUrl)
     }
 
@@ -36,16 +40,18 @@ export function AvatarEditor() {
                         <AvatarDisplay ref={displayRef} />
                     </Suspense>
                 </CanvasFrame>
-                <div>
-                <SnapshotTitle>Snapshot</SnapshotTitle>
+                {/* <div>
                     {avatarImage && <SnapshotView src={avatarImage} alt="Avatar Thumbnail" />}
-                </div>
+                </div> */}
             </RowFrame>
-            <RowFrame>
-                <Button onClick={handleDownloadGlb}>Download GLB</Button>
-                <Button onClick={handleSnapshot}>Snapshot</Button>
-            </RowFrame>
-            <AvatarSelector />
+            {props.isEditMode && (
+                <>
+                    <AvatarSelector />
+                    <Flex align="center" justify="center">
+                        <Button onClick={handleDownloadGlb}>저장하기</Button>
+                    </Flex>
+                </>
+            )}
         </AvatarProvider>
     )
 }
@@ -57,27 +63,4 @@ const CanvasFrame = styled.div`
 `
 const RowFrame = styled.div`
     display: flex;
-`
-const SnapshotView = styled.img`
-    width: 400px;
-    height: 600px;
-    background: #f8f8f8;
-`
-const SnapshotTitle = styled.div`
-    position: absolute;
-    width: 400px;
-    height: 600px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-`
-const Button = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 150px;
-    height: 40px;
-    border-radius: 5px;
-    background-color: #6699CC;
 `

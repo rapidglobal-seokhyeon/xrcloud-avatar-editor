@@ -4,14 +4,15 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
 type Props = {
     children: React.ReactNode
+    isPart: boolean
 }
 
-export function AvatarControls({ children }: Props) {
+export function AvatarControls(props: Props) {
     const controlsRef = useRef<OrbitControlsImpl>(null)
     const orbitControlsRef: RefObject<OrbitControlsImpl> = controlsRef
 
     const minDistance = 0.5
-    const maxDistance = 1.5
+    const maxDistance = props.isPart ? 0.55 : 1.5
 
     const modelHeightMax = -1.2
     const modelHeightMin = -1.7
@@ -27,14 +28,14 @@ export function AvatarControls({ children }: Props) {
             const distance = position.distanceTo(target)
             const distanceRatio = (distance - minDistance) / (maxDistance - minDistance)
             const newModelHeight = modelHeightMin + distanceRatio * (modelHeightMax - modelHeightMin)
-
+            console.info('newModelHeight', newModelHeight)
             setModelHeight(newModelHeight)
         }
     }, [modelHeightMax, modelHeightMin, setModelHeight])
 
     return (
         <group position={[0, modelHeight, 0]}>
-            {children}
+            {props.children}
 
             <OrbitControls
                 ref={orbitControlsRef}
@@ -45,7 +46,7 @@ export function AvatarControls({ children }: Props) {
                 enablePan={false}
                 enableDamping
                 onChange={handleZoomChange}
-                target={[0, -0.3, 0]}
+                target={[0, props.isPart ? 0.1 : -0.3, 0]}
             />
         </group>
     )

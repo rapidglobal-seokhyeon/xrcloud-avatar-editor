@@ -1,34 +1,31 @@
 import styled from '@emotion/styled'
 import { useGLTF } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
-import { forwardRef, useImperativeHandle, useRef } from 'react'
+import { FunctionComponent, forwardRef, useImperativeHandle, useRef } from 'react'
 import { Group } from 'three'
 import { useAvatar } from '../AvatarContext'
-import { GLTFResult } from '../types'
+import { AvatarPartName, GLTFResult } from '../types'
 import { AvatarAnimation } from './AvatarAnimation'
 import { AvatarAssembly } from './AvatarAssembly'
 import { AvatarControls } from './AvatarControls'
 import { AvatarExporter, AvatarExporterHandles } from './AvatarExporter'
 import Light from './Light'
 
-export type AvatarDisplayHandles = AvatarExporterHandles
+export interface AvatarDisplayHandles {
+    partName: AvatarPartName
+    option: {
+        name: string
+    }
+}
 
-export const AvatarDisplay = forwardRef<AvatarExporterHandles, {}>((props, ref) => {
+export const AvatarPartDisplay: FunctionComponent<AvatarDisplayHandles> = (props) => {
     const rootRef = useRef<Group>(null)
-    const exporterRef = useRef<AvatarExporterHandles | null>(null)
 
     const { currentAnimation, blueprint, ...parts } = useAvatar()
     const { nodes, animations } = useGLTF(blueprint.skeleton.fileUrl) as GLTFResult
-
-    useImperativeHandle(ref, () => ({
-        exportAvatar: async (): Promise<ArrayBuffer | undefined> => {
-            return exporterRef.current?.exportAvatar()
-        },
-        getSnapshot: (): string | undefined => {
-            return exporterRef.current?.getSnapshot()
-        }
-    }))
-
+    console.info('props', props)
+    console.info('parts', parts)
+    console.info('nodes', nodes)
     return (
         <StyledCanvas
             gl={{
@@ -37,15 +34,19 @@ export const AvatarDisplay = forwardRef<AvatarExporterHandles, {}>((props, ref) 
                 alpha: true
             }}
         >
-            <AvatarControls isPart={false}>
-                <AvatarAssembly skeletonNodes={nodes} rootRef={rootRef} parts={parts} />
+            <AvatarControls isPart={true}>
+                <AvatarAssembly
+                    skeletonNodes={nodes}
+                    rootRef={rootRef}
+                    parts={parts}
+                    partName={props.partName}
+                />
                 <Light />
             </AvatarControls>
             <AvatarAnimation rootRef={rootRef} currentAnimation={currentAnimation} animations={animations} />
-            <AvatarExporter rootRef={rootRef} animations={animations} ref={exporterRef} />
         </StyledCanvas>
     )
-})
+}
 
 const StyledCanvas = styled(Canvas)`
     width: 100%;
