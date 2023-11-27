@@ -54,7 +54,14 @@ function App() {
                     </div>
                 </Flex>
             </CommonLayout>
-            <Modal title="아바타 편집" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer="">
+            <Modal
+                width={650}
+                title="아바타 편집"
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                footer=""
+            >
                 <AvatarPopup />
             </Modal>
         </div>

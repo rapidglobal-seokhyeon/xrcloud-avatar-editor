@@ -1,10 +1,11 @@
 import styled from '@emotion/styled'
 import { useAvatar } from './AvatarContext'
 import { allAvatarBlueprints } from './blueprints'
-import { AvatarPartName, avatarAnimations } from './types'
-import { ManOutlined, WomanOutlined } from '@ant-design/icons'
+import { AvatarPart, AvatarPartName, avatarAnimations } from './types'
+import { LeftOutlined, ManOutlined, RightOutlined, WomanOutlined } from '@ant-design/icons'
 import { Button, Col, Flex, Grid, Radio, Row, Tabs, TabsProps } from 'antd'
 import { AvatarPartDisplay } from './AvatarDisplay/AvatarPartDisplay'
+import { Suspense, useState } from 'react'
 
 export function AvatarSelector() {
     const {
@@ -16,19 +17,24 @@ export function AvatarSelector() {
         setGlasses,
         setHair,
         setLeg,
-        setCurrentAnimation
+        setCurrentAnimation,
+        Hair,
+        Face,
+        Body,
+        Leg,
+        Foot,
+        Glasses
     } = useAvatar()
-    console.info('blueprint', blueprint)
-
     const items: TabsProps['items'] = [
         {
             key: 'Hair',
             label: '헤어',
             children: (
                 <SelectComponent
+                    defaultValue={Hair}
                     partName="Hair"
                     options={blueprint.hairs}
-                    onChange={(event) => setHair(blueprint.hairs[parseInt(event.target.value)])}
+                    onChange={(option) => setHair(option)}
                 />
             )
         },
@@ -38,8 +44,9 @@ export function AvatarSelector() {
             children: (
                 <SelectComponent
                     partName="Face"
+                    defaultValue={Face}
                     options={blueprint.faces}
-                    onChange={(event) => setFace(blueprint.faces[parseInt(event.target.value)])}
+                    onChange={(option) => setFace(option)}
                 />
             )
         },
@@ -49,8 +56,9 @@ export function AvatarSelector() {
             children: (
                 <SelectComponent
                     partName="Body"
+                    defaultValue={Body}
                     options={blueprint.bodies}
-                    onChange={(event) => setBody(blueprint.bodies[parseInt(event.target.value)])}
+                    onChange={(option) => setBody(option)}
                 />
             )
         },
@@ -60,8 +68,9 @@ export function AvatarSelector() {
             children: (
                 <SelectComponent
                     partName="Leg"
+                    defaultValue={Leg}
                     options={blueprint.legs}
-                    onChange={(event) => setLeg(blueprint.legs[parseInt(event.target.value)])}
+                    onChange={(option) => setLeg(option)}
                 />
             )
         },
@@ -71,8 +80,9 @@ export function AvatarSelector() {
             children: (
                 <SelectComponent
                     partName="Foot"
+                    defaultValue={Foot}
                     options={blueprint.feet}
-                    onChange={(event) => setFoot(blueprint.feet[parseInt(event.target.value)])}
+                    onChange={(option) => setFoot(option)}
                 />
             )
         },
@@ -82,8 +92,9 @@ export function AvatarSelector() {
             children: (
                 <SelectComponent
                     partName="Glasses"
+                    defaultValue={Glasses}
                     options={blueprint.glasses}
-                    onChange={(event) => setGlasses(blueprint.glasses[parseInt(event.target.value)])}
+                    onChange={(option) => setGlasses(option)}
                 />
             )
         }
@@ -109,7 +120,7 @@ export function AvatarSelector() {
                 </Flex>
             </Container>
             <Container>
-                <Tabs defaultActiveKey="1" items={items} onChange={onChangePartTab} />
+                <Tabs centered defaultActiveKey="1" items={items} onChange={onChangePartTab} />
             </Container>
             <Container>
                 <div></div>
@@ -120,32 +131,59 @@ export function AvatarSelector() {
 
 interface SelectComponentProps {
     partName: AvatarPartName
-    options: { name: string }[]
-    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void
+    options: AvatarPart[]
+    defaultValue?: AvatarPart
+    onChange: (option: AvatarPart) => void
 }
+const PAGE_SIZE = 4
+const SelectComponent: React.FC<SelectComponentProps> = ({ partName, options, onChange, defaultValue }) => {
+    const [page, setPage] = useState(0)
 
-const SelectComponent: React.FC<SelectComponentProps> = ({ partName, options, onChange }) => {
-    console.info('options', options)
     return (
         <div
             style={{
                 display: 'flex',
                 justifyContent: 'center',
-                alignContent: 'center'
+                alignItems: 'center'
             }}
         >
-            {options.map((option, index) => (
-                <div
-                    className="gutter-row"
-                    key={index}
-                    style={{
-                        height: 100,
-                        width: 100
-                    }}
-                >
-                    <AvatarPartDisplay option={option} partName={partName} />
-                </div>
-            ))}
+            <Button onClick={() => setPage(page - 1)} disabled={page === 0} icon={<LeftOutlined />} />
+            <div
+                style={{
+                    flex: 1,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: 10
+                }}
+            >
+                {[...options].slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE).map((option, index) => {
+                    return (
+                        <div
+                            className="gutter-row"
+                            key={`${partName}-${option.name}-${index}`}
+                            style={{
+                                height: 100,
+                                width: 100,
+                                backgroundColor: '#f8f8f8',
+                                border: '2px solid',
+                                borderColor: defaultValue?.name === option.name ? '#1890ff' : '#e8e8e8',
+                                borderRadius: 5
+                            }}
+                            onClick={() => onChange(option)}
+                        >
+                            <Suspense fallback={<p>Loading...</p>}>
+                                <AvatarPartDisplay option={option} partName={partName} />
+                            </Suspense>
+                        </div>
+                    )
+                })}
+            </div>
+            <Button
+                onClick={() => setPage(page + 1)}
+                disabled={page + 1 === Math.ceil(options.length / PAGE_SIZE)}
+                icon={<RightOutlined />}
+            />
         </div>
     )
 }

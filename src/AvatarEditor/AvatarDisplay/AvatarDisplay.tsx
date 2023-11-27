@@ -37,7 +37,7 @@ export const AvatarDisplay = forwardRef<AvatarExporterHandles, {}>((props, ref) 
                 alpha: true
             }}
         >
-            <AvatarControls isPart={false}>
+            <AvatarControls>
                 <AvatarAssembly skeletonNodes={nodes} rootRef={rootRef} parts={parts} />
                 <Light />
             </AvatarControls>

@@ -47,8 +47,16 @@ export const AvatarEditor: FunctionComponent<IProps> = (props) => {
             {props.isEditMode && (
                 <>
                     <AvatarSelector />
-                    <Flex align="center" justify="center">
-                        <Button onClick={handleDownloadGlb}>저장하기</Button>
+                    <Flex
+                        align="center"
+                        justify="center"
+                        style={{
+                            marginTop: 20
+                        }}
+                    >
+                        <Button type="primary" onClick={handleDownloadGlb} size="large">
+                            저장하기
+                        </Button>
                     </Flex>
                 </>
             )}
@@ -63,4 +71,6 @@ const CanvasFrame = styled.div`
 `
 const RowFrame = styled.div`
     display: flex;
+    margin-bottom: 20px;
+    justify-content: center;
 `

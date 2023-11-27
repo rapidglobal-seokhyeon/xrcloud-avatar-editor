@@ -11,9 +11,6 @@ interface Props {
 }
 
 export function AvatarAssembly({ rootRef, skeletonNodes, parts, partName }: Props) {
-    console.info('avatarPartNames', avatarPartNames)
-    console.info('parts', parts)
-    console.info('skeletonNodes', skeletonNodes)
     return (
         <group name="Scene">
             <group name="Armature" ref={rootRef} position={[0, 0, 0]}>
@@ -50,7 +47,7 @@ export function AvatarAssembly({ rootRef, skeletonNodes, parts, partName }: Prop
                     />
                 )}
 
-                <primitive key={skeletonNodes.Hips.uuid} object={skeletonNodes.Hips} />
+                <primitive key={skeletonNodes.Hips.uuid} dispose={null} object={skeletonNodes.Hips} />
             </group>
         </group>
     )

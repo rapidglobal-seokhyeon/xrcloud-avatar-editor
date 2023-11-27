@@ -1,6 +1,7 @@
 import { useGLTF } from '@react-three/drei'
 import { SkinnedMesh } from 'three'
 import { AvatarPart, AvatarPartName, GLTFResult } from '../types'
+import { useEffect } from 'react'
 
 export interface AvatarParts {
     Hair: AvatarPart | undefined
@@ -33,6 +34,7 @@ export function AvatarAssemblyPart({ name, skeletonNodes, parts }: Props) {
             geometry={nodes[name].geometry}
             material={materials[name]}
             skeleton={skeletonNodes[name].skeleton}
+            dispose={null}
         />
     )
 }

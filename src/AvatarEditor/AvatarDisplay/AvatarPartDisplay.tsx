@@ -1,31 +1,28 @@
 import styled from '@emotion/styled'
 import { useGLTF } from '@react-three/drei'
-import { Canvas } from '@react-three/fiber'
+import { Canvas, useLoader, useThree } from '@react-three/fiber'
 import { FunctionComponent, forwardRef, useImperativeHandle, useRef } from 'react'
 import { Group } from 'three'
 import { useAvatar } from '../AvatarContext'
-import { AvatarPartName, GLTFResult } from '../types'
+import { AvatarPart, AvatarPartName, GLTFResult } from '../types'
 import { AvatarAnimation } from './AvatarAnimation'
 import { AvatarAssembly } from './AvatarAssembly'
 import { AvatarControls } from './AvatarControls'
 import { AvatarExporter, AvatarExporterHandles } from './AvatarExporter'
 import Light from './Light'
+import { AvatarAssemblyForPart } from './AvatarAssemblyForPart'
 
 export interface AvatarDisplayHandles {
     partName: AvatarPartName
-    option: {
-        name: string
-    }
+    option: AvatarPart
 }
 
 export const AvatarPartDisplay: FunctionComponent<AvatarDisplayHandles> = (props) => {
     const rootRef = useRef<Group>(null)
 
-    const { currentAnimation, blueprint, ...parts } = useAvatar()
-    const { nodes, animations } = useGLTF(blueprint.skeleton.fileUrl) as GLTFResult
-    console.info('props', props)
-    console.info('parts', parts)
-    console.info('nodes', nodes)
+    const { currentAnimation, blueprint } = useAvatar()
+    const { nodes } = useGLTF(blueprint.skeleton.fileUrl) as GLTFResult
+
     return (
         <StyledCanvas
             gl={{
@@ -33,17 +30,20 @@ export const AvatarPartDisplay: FunctionComponent<AvatarDisplayHandles> = (props
                 preserveDrawingBuffer: true,
                 alpha: true
             }}
+            scene={{
+                dispose: null
+            }}
         >
-            <AvatarControls isPart={true}>
-                <AvatarAssembly
+            <AvatarControls partName={props.partName}>
+                <AvatarAssemblyForPart
                     skeletonNodes={nodes}
                     rootRef={rootRef}
-                    parts={parts}
+                    part={props.option}
                     partName={props.partName}
                 />
                 <Light />
             </AvatarControls>
-            <AvatarAnimation rootRef={rootRef} currentAnimation={currentAnimation} animations={animations} />
+            {/* <AvatarAnimation rootRef={rootRef} currentAnimation={currentAnimation} animations={animations} /> */}
         </StyledCanvas>
     )
 }
