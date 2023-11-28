@@ -54,16 +54,36 @@ function App() {
                     </div>
                 </Flex>
             </CommonLayout>
-            <Modal
-                width={650}
-                title="아바타 편집"
-                open={isModalOpen}
-                onOk={handleOk}
-                onCancel={handleCancel}
-                footer=""
-            >
+            {isModalOpen && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        top: '0',
+                        left: '0',
+                        bottom: 0,
+                        right: 0,
+                        background: '#000000b4',
+                        zIndex: 1000,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                >
+                    <div
+                        style={{
+                            position: 'absolute',
+                            width: 500,
+                            background: '#fff'
+                        }}
+                    >
+                        <AvatarPopup />
+                    </div>
+                </div>
+            )}
+            {/* <div> <AvatarPopup /></div>
+            <Modal title="아바타 편집" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer="">
                 <AvatarPopup />
-            </Modal>
+            </Modal> */}
         </div>
     )
 }

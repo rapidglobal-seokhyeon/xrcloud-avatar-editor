@@ -5,5 +5,5 @@ import { AvatarEditor } from '../AvatarEditor'
 interface IProps {}
 
 export const AvatarPopup: React.FunctionComponent<IProps> = () => {
-    return <AvatarEditor isEditMode={true} />
+    return <AvatarEditor key={`AvatarPopup`} isEditMode={true} />
 }

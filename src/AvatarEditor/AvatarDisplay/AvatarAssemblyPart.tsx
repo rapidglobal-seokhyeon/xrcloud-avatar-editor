@@ -29,7 +29,7 @@ export function AvatarAssemblyPart({ name, skeletonNodes, parts }: Props) {
 
     return (
         <skinnedMesh
-            key={nodes[name].uuid}
+            key={`${nodes[name].uuid}-${Date.now()}`}
             name={name}
             geometry={nodes[name].geometry}
             material={materials[name]}

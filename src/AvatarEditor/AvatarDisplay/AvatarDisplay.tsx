@@ -36,6 +36,10 @@ export const AvatarDisplay = forwardRef<AvatarExporterHandles, {}>((props, ref) 
                 preserveDrawingBuffer: true,
                 alpha: true
             }}
+            scene={{
+                dispose: null
+            }}
+            key={Date.now()}
         >
             <AvatarControls>
                 <AvatarAssembly skeletonNodes={nodes} rootRef={rootRef} parts={parts} />

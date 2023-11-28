@@ -14,38 +14,14 @@ export function AvatarAssembly({ rootRef, skeletonNodes, parts, partName }: Prop
     return (
         <group name="Scene">
             <group name="Armature" ref={rootRef} position={[0, 0, 0]}>
-                {!partName ? (
-                    avatarPartNames.map((name) => (
-                        <AvatarAssemblyPart
-                            key={name}
-                            name={name}
-                            parts={parts}
-                            skeletonNodes={skeletonNodes}
-                        />
-                    ))
-                ) : partName === 'Hair' ? (
-                    <>
-                        <AvatarAssemblyPart
-                            key={'Hair'}
-                            name={'Hair'}
-                            parts={parts}
-                            skeletonNodes={skeletonNodes}
-                        />
-                        <AvatarAssemblyPart
-                            key={'Face'}
-                            name={'Face'}
-                            parts={parts}
-                            skeletonNodes={skeletonNodes}
-                        />
-                    </>
-                ) : (
+                {avatarPartNames.map((name) => (
                     <AvatarAssemblyPart
-                        key={partName}
-                        name={partName}
+                        key={`${Date.now()}-${name}`}
+                        name={name}
                         parts={parts}
                         skeletonNodes={skeletonNodes}
                     />
-                )}
+                ))}
 
                 <primitive key={skeletonNodes.Hips.uuid} dispose={null} object={skeletonNodes.Hips} />
             </group>
