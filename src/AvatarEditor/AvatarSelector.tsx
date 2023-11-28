@@ -172,10 +172,10 @@ const SelectComponent: React.FC<SelectComponentProps> = ({ partName, options, on
                             }}
                             onClick={() => onChange(option)}
                         >
-                            {/* <Suspense fallback={<p>Loading...</p>}>
+                            <Suspense fallback={<p>Loading...</p>}>
                                 <AvatarPartDisplay option={option} partName={partName} />
-                            </Suspense> */}
-                            {option.name}
+                            </Suspense>
+                            {/* {option.name} */}
                         </div>
                     )
                 })}

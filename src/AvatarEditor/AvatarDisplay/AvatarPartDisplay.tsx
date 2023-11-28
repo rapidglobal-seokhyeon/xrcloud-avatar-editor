@@ -11,6 +11,7 @@ import { AvatarControls } from './AvatarControls'
 import { AvatarExporter, AvatarExporterHandles } from './AvatarExporter'
 import Light from './Light'
 import { AvatarAssemblyForPart } from './AvatarAssemblyForPart'
+import { Button } from 'antd'
 
 export interface AvatarDisplayHandles {
     partName: AvatarPartName
@@ -19,32 +20,46 @@ export interface AvatarDisplayHandles {
 
 export const AvatarPartDisplay: FunctionComponent<AvatarDisplayHandles> = (props) => {
     const rootRef = useRef<Group>(null)
-
+    const exporterRef = useRef<AvatarExporterHandles | null>(null)
     const { currentAnimation, blueprint } = useAvatar()
-    const { nodes } = useGLTF(blueprint.skeleton.fileUrl) as GLTFResult
+    const { nodes, animations } = useGLTF(blueprint.skeleton.fileUrl) as GLTFResult
 
     return (
-        <StyledCanvas
-            gl={{
-                antialias: true,
-                preserveDrawingBuffer: true,
-                alpha: true
-            }}
-            scene={{
-                dispose: null
-            }}
-        >
-            <AvatarControls partName={props.partName}>
-                <AvatarAssemblyForPart
-                    skeletonNodes={nodes}
-                    rootRef={rootRef}
-                    part={props.option}
-                    partName={props.partName}
-                />
-                <Light />
-            </AvatarControls>
-            {/* <AvatarAnimation rootRef={rootRef} currentAnimation={currentAnimation} animations={animations} /> */}
-        </StyledCanvas>
+        <>
+            <StyledCanvas
+                gl={{
+                    antialias: true,
+                    preserveDrawingBuffer: true,
+                    alpha: true
+                }}
+                scene={{
+                    dispose: null
+                }}
+            >
+                <AvatarControls partName={props.partName}>
+                    <AvatarAssemblyForPart
+                        skeletonNodes={nodes}
+                        rootRef={rootRef}
+                        part={props.option}
+                        partName={props.partName}
+                    />
+                    <Light />
+                </AvatarControls>
+                <AvatarExporter rootRef={rootRef} animations={animations} ref={exporterRef} />
+            </StyledCanvas>
+            <Button
+                onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    var a = document.createElement('a')
+                    a.href = exporterRef.current?.getSnapshot()!
+                    a.download = 'Image.png'
+                    a.click()
+                }}
+            >
+                이미지 다운로드
+            </Button>
+        </>
     )
 }
 
