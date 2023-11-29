@@ -3,6 +3,6 @@ const router = express.Router()
 
 const avatar = require('./avatar.js')
 
-router.use('/avatar', avatar)
+router.use('/', avatar)
 
 module.exports = router

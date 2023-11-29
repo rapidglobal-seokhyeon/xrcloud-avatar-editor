@@ -85,18 +85,6 @@ export function AvatarSelector() {
                     onChange={(option) => setFoot(option)}
                 />
             )
-        },
-        {
-            key: 'Glasses',
-            label: '안경',
-            children: (
-                <SelectComponent
-                    partName="Glasses"
-                    defaultValue={Glasses}
-                    options={blueprint.glasses}
-                    onChange={(option) => setGlasses(option)}
-                />
-            )
         }
     ]
     const onChangePartTab = (key: string) => {
