@@ -3,8 +3,7 @@ const router = express()
 const { XMLBuilder, XMLParser } = require('fast-xml-parser')
 const fs = require('fs')
 const multer = require('multer')
-const UPLOAD_PATH = 'attachfile/avatar'
-const upload = multer({ dest: UPLOAD_PATH })
+const upload = multer({ dest: process.env.AVARTAR_UPLOAD_PATH })
 const path = require('path')
 
 const options = {
@@ -15,7 +14,7 @@ const options = {
 const builder = new XMLBuilder(options)
 
 router.get('/:userId', (req, res) => {
-    const userAvatarFolderPath = `./${UPLOAD_PATH}/${req.params.userId}`
+    const userAvatarFolderPath = `./${process.env.AVARTAR_UPLOAD_PATH}/${req.params.userId}`
     if (!fs.existsSync(`${userAvatarFolderPath}/${req.params.userId}.xml`)) {
         res.status(500).send('File not found')
         return
@@ -47,12 +46,15 @@ ${builder.build({
     }
 })}
     `
-    const userAvatarFolderPath = `./${UPLOAD_PATH}/${req.body.userId}`
+    const userAvatarFolderPath = `./${process.env.AVARTAR_UPLOAD_PATH}/${req.body.userId}`
 
     if (!fs.existsSync(userAvatarFolderPath)) {
         fs.mkdirSync(userAvatarFolderPath, { recursive: true })
     }
-    fs.renameSync(`./${UPLOAD_PATH}/${req.file.filename}`, `${userAvatarFolderPath}/${req.body.userId}.glb`)
+    fs.renameSync(
+        `./${process.env.AVARTAR_UPLOAD_PATH}/${req.file.filename}`,
+        `${userAvatarFolderPath}/${req.body.userId}.glb`
+    )
     try {
         fs.writeFileSync(`${userAvatarFolderPath}/${req.params.userId}.xml`, output)
         res.send({
