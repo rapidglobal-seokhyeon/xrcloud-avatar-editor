@@ -46,7 +46,7 @@ ${builder.build({
 })}
     `
     const userAvatarFolderPath = `${process.env.AVARTAR_UPLOAD_PATH}/${req.body.userId}`
-    console.log('userAvatarFolderPath', userAvatarFolderPath)
+
     if (!fs.existsSync(userAvatarFolderPath)) {
         fs.mkdirSync(userAvatarFolderPath, { recursive: true })
     }

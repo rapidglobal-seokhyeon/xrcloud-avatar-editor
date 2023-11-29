@@ -15,7 +15,7 @@ function App() {
     useEffect(() => {
         const userNo = getUserNo()
         axios
-            .get(`${process.env.REACT_APP_SERVER_URL}/${userNo}`)
+            .get(`${process.env.REACT_APP_SERVER_URL}${process.env.REACT_APP_API_END_POINT}/${userNo}`)
             .then((res) => {
                 setDefaultAvatar(res.data)
             })

@@ -11,7 +11,7 @@ app.use(express.static(path.join(__dirname, 'build')))
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
-app.use('/', routes)
+app.use(process.env.REACT_APP_API_END_POINT, routes)
 
 app.listen(PORT, () => {
     console.log(`Server run : http://localhost:${PORT}/`)
