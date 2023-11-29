@@ -1,19 +1,22 @@
 import styled from '@emotion/styled'
 import { useGLTF } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
-import { forwardRef, useImperativeHandle, useRef } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import { Group } from 'three'
 import { useAvatar } from '../AvatarContext'
-import { GLTFResult } from '../types'
+import { AvatartPartType, GLTFResult } from '../types'
 import { AvatarAnimation } from './AvatarAnimation'
 import { AvatarAssembly } from './AvatarAssembly'
 import { AvatarControls } from './AvatarControls'
 import { AvatarExporter, AvatarExporterHandles } from './AvatarExporter'
 import Light from './Light'
+import { allAvatarBlueprints } from '../blueprints'
 
 export type AvatarDisplayHandles = AvatarExporterHandles
-
-export const AvatarDisplay = forwardRef<AvatarExporterHandles, {}>((props, ref) => {
+interface IProps {
+    defaultAvatar: AvatartPartType | null
+}
+export const AvatarDisplay = forwardRef<AvatarExporterHandles, IProps>((props, ref) => {
     const rootRef = useRef<Group>(null)
     const exporterRef = useRef<AvatarExporterHandles | null>(null)
 
@@ -39,7 +42,6 @@ export const AvatarDisplay = forwardRef<AvatarExporterHandles, {}>((props, ref) 
             scene={{
                 dispose: null
             }}
-            key={Date.now()}
         >
             <AvatarControls>
                 <AvatarAssembly skeletonNodes={nodes} rootRef={rootRef} parts={parts} />

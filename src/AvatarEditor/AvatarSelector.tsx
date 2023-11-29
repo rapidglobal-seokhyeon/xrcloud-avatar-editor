@@ -138,7 +138,8 @@ interface SelectComponentProps {
 const PAGE_SIZE = 4
 const SelectComponent: React.FC<SelectComponentProps> = ({ partName, options, onChange, defaultValue }) => {
     const [page, setPage] = useState(0)
-
+    const { blueprint } = useAvatar()
+    const sex = blueprint.skeleton.name.toLowerCase()
     return (
         <div
             style={{
@@ -172,10 +173,13 @@ const SelectComponent: React.FC<SelectComponentProps> = ({ partName, options, on
                             }}
                             onClick={() => onChange(option)}
                         >
-                            <Suspense fallback={<p>Loading...</p>}>
+                            {/* <Suspense fallback={<p>Loading...</p>}>
                                 <AvatarPartDisplay option={option} partName={partName} />
-                            </Suspense>
-                            {/* {option.name} */}
+                            </Suspense> */}
+                            <img
+                                src={`/avatar_part_image/${sex}/${partName.toLowerCase()}/${option.name}.png`}
+                                alt={``}
+                            />
                         </div>
                     )
                 })}

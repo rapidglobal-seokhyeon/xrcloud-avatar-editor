@@ -1,19 +1,36 @@
 import { Button, Flex, Modal } from 'antd'
 import './App.css'
 import { AvatarEditor } from './AvatarEditor'
-import CommonLayout from './layouts/CommonLayout'
 import { EmptyAvatar } from './components/EmptyAvatar'
-import { useState } from 'react'
-import { AvatarPopup } from './components/AvatarPopup'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { AvatartPartType } from './AvatarEditor/types'
+import { CloseOutlined } from '@ant-design/icons'
+import { getUserNo } from './utils/getUserNo'
 
 function App() {
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [defaultAvatar, setDefaultAvatar] = useState<AvatartPartType | null>(null)
+
+    useEffect(() => {
+        const userNo = getUserNo()
+        axios
+            .get(`/api/avatar/${userNo}`)
+            .then((res) => {
+                setDefaultAvatar(res.data)
+            })
+            .catch((e) => {
+                console.error(e)
+            })
+    }, [])
 
     const showModal = () => {
         setIsModalOpen(true)
     }
 
     const handleOk = () => {
+        alert('저장되었습니다.')
+        window.location.reload()
         setIsModalOpen(false)
     }
 
@@ -23,8 +40,23 @@ function App() {
 
     return (
         <div className="App">
-            <CommonLayout>
-                <Flex align="center" justify="center" gap={40}>
+            <Flex align="center" justify="center" gap={40}>
+                {defaultAvatar ? (
+                    <div>
+                        <div
+                            style={{
+                                fontWeight: 'bold',
+                                fontSize: '1.25rem'
+                            }}
+                        >
+                            나의 아바타
+                        </div>
+                        <AvatarEditor isEditMode={false} defaultAvatar={defaultAvatar} />
+                        <Button type="primary" onClick={showModal}>
+                            편집하기
+                        </Button>
+                    </div>
+                ) : (
                     <div>
                         <div
                             style={{
@@ -35,25 +67,12 @@ function App() {
                             나의 아바타
                         </div>
                         <EmptyAvatar />
-
-                        <Button type="primary">등록하기</Button>
-                    </div>
-                    <div>
-                        <div
-                            style={{
-                                fontWeight: 'bold',
-                                fontSize: '1.25rem'
-                            }}
-                        >
-                            나의 아바타
-                        </div>
-                        <AvatarEditor isEditMode={false} />
                         <Button type="primary" onClick={showModal}>
-                            편집하기
+                            등록하기
                         </Button>
                     </div>
-                </Flex>
-            </CommonLayout>
+                )}
+            </Flex>
             {isModalOpen && (
                 <div
                     style={{
@@ -72,18 +91,32 @@ function App() {
                     <div
                         style={{
                             position: 'absolute',
-                            width: 500,
-                            background: '#fff'
+                            width: 600,
+                            maxHeight: '90vh',
+                            background: '#fff',
+                            overflowY: 'scroll',
+                            padding: 20
                         }}
                     >
-                        <AvatarPopup />
+                        <div>
+                            <Button
+                                icon={<CloseOutlined />}
+                                onClick={handleCancel}
+                                type="link"
+                                style={{
+                                    float: 'right'
+                                }}
+                            />
+                            <AvatarEditor
+                                key={Date.now()}
+                                onSave={handleOk}
+                                defaultAvatar={defaultAvatar}
+                                isEditMode={true}
+                            />
+                        </div>
                     </div>
                 </div>
             )}
-            {/* <div> <AvatarPopup /></div>
-            <Modal title="아바타 편집" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer="">
-                <AvatarPopup />
-            </Modal> */}
         </div>
     )
 }

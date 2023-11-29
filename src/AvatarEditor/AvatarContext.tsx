@@ -1,6 +1,6 @@
 import React, { ReactNode, useContext, useEffect, useState } from 'react'
 import { allAvatarBlueprints } from './blueprints'
-import { AvatarBlueprint, AvatarPart } from './types'
+import { AvatarBlueprint, AvatarPart, AvatartPartType } from './types'
 
 type SetPartType = (Hair: AvatarPart | undefined) => void
 
@@ -27,7 +27,13 @@ interface AvatarContextValue {
 
 const AvatarContext = React.createContext({} as AvatarContextValue)
 
-export function AvatarProvider({ children }: { children: ReactNode }) {
+export function AvatarProvider({
+    children,
+    defaultAvatar
+}: {
+    children: ReactNode
+    defaultAvatar: AvatartPartType | null
+}) {
     const [blueprint, setBlueprint] = useState<AvatarBlueprint>(allAvatarBlueprints[0])
     const [currentAnimation, setCurrentAnimation] = useState<string>('Idle')
     const [Hair, setHair] = useState<AvatarPart>()
@@ -47,6 +53,30 @@ export function AvatarProvider({ children }: { children: ReactNode }) {
         setHand(blueprint.hands[0])
         setGlasses(undefined)
     }, [blueprint])
+
+    useEffect(() => {
+        if (defaultAvatar) {
+            const findBlueprint = allAvatarBlueprints.find(
+                (item) => item.skeleton.name === defaultAvatar?.Sex
+            )
+            if (!findBlueprint) return
+            const hair = findBlueprint.hairs.find((hair) => hair.name === defaultAvatar!.Hair)
+            const face = findBlueprint.faces.find((face) => face.name === defaultAvatar!.Face)
+            const body = findBlueprint.bodies.find((body) => body.name === defaultAvatar!.Body)
+            const leg = findBlueprint.legs.find((leg) => leg.name === defaultAvatar!.Leg)
+            const foot = findBlueprint.feet.find((foot) => foot.name === defaultAvatar!.Foot)
+            const hand = findBlueprint.hands.find((hand) => hand.name === defaultAvatar!.Hand)
+            const glasses = findBlueprint.glasses.find((glasses) => glasses.name === defaultAvatar!.Glasses)
+            setBlueprint(findBlueprint)
+            setHair(hair)
+            setFace(face)
+            setBody(body)
+            setLeg(leg)
+            setFoot(foot)
+            setHand(hand)
+            setGlasses(glasses)
+        }
+    }, [defaultAvatar, setBlueprint, setBody, setFace, setFoot, setGlasses, setHair, setHand, setLeg])
 
     const context = {
         currentAnimation,

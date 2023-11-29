@@ -53,7 +53,7 @@ export const AvatarPartDisplay: FunctionComponent<AvatarDisplayHandles> = (props
                     e.stopPropagation()
                     var a = document.createElement('a')
                     a.href = exporterRef.current?.getSnapshot()!
-                    a.download = 'Image.png'
+                    a.download = props.option.name + '.png'
                     a.click()
                 }}
             >

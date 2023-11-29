@@ -4,47 +4,31 @@ import { AvatarProvider } from './AvatarContext'
 import { AvatarDisplay, AvatarDisplayHandles } from './AvatarDisplay'
 import { AvatarSelector } from './AvatarSelector'
 import { Button, Flex } from 'antd'
+import { AvatarSaveButton } from './AvatarSaveButton'
+import { AvatartPartType } from './types'
 
 interface IProps {
+    onSave?: () => void
     isEditMode: boolean
+    defaultAvatar: AvatartPartType | null
 }
 export const AvatarEditor: FunctionComponent<IProps> = (props) => {
     const displayRef = useRef<AvatarDisplayHandles | null>(null)
     const [avatarImage, setAvatarImage] = useState<string | undefined>()
 
-    const handleDownloadGlb = async () => {
-        const result = await displayRef.current?.exportAvatar()
-
-        if (result) {
-            const blob = new Blob([result], { type: 'model/gltf-binary' })
-            const url = URL.createObjectURL(blob)
-            const a = document.createElement('a') as unknown as HTMLAnchorElement
-            a.href = url
-            a.download = 'avatar.glb'
-            a.click()
-        } else {
-            alert('export failed')
-        }
-    }
-
-    const handleSnapshot = async () => {
-        const imageUrl = displayRef.current?.getSnapshot()
-        setAvatarImage(imageUrl)
-    }
-
     return (
-        <AvatarProvider>
+        <AvatarProvider defaultAvatar={props.defaultAvatar}>
             <RowFrame>
                 <CanvasFrame>
                     <Suspense fallback={<p>Loading...</p>}>
-                        <AvatarDisplay ref={displayRef} />
+                        <AvatarDisplay ref={displayRef} defaultAvatar={props.defaultAvatar} />
                     </Suspense>
                 </CanvasFrame>
                 {/* <div>
                     {avatarImage && <SnapshotView src={avatarImage} alt="Avatar Thumbnail" />}
                 </div> */}
             </RowFrame>
-            {props.isEditMode && (
+            {props.isEditMode && props.onSave && (
                 <>
                     <AvatarSelector />
                     <Flex
@@ -54,9 +38,7 @@ export const AvatarEditor: FunctionComponent<IProps> = (props) => {
                             marginTop: 20
                         }}
                     >
-                        <Button type="primary" onClick={handleDownloadGlb} size="large">
-                            저장하기
-                        </Button>
+                        <AvatarSaveButton displayRef={displayRef} onSave={props.onSave} />
                     </Flex>
                 </>
             )}

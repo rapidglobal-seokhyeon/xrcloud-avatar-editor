@@ -32,7 +32,16 @@ export const avatarAnimations = [
 ]
 export type AvatarPartName = 'Hair' | 'Face' | 'Body' | 'Leg' | 'Foot' | 'Hand' | 'Glasses'
 export const avatarPartNames: AvatarPartName[] = ['Hair', 'Face', 'Body', 'Leg', 'Foot', 'Hand', 'Glasses']
-
+export interface AvatartPartType {
+    Sex: string
+    Hair: string
+    Face: string
+    Body: string
+    Leg: string
+    Foot: string
+    Hand: string
+    Glasses: string
+}
 export type AvatarParts = Record<AvatarPartName, AvatarPart | undefined>
 
 export type GLTFResult = GLTF & {
