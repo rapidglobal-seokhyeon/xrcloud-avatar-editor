@@ -57,9 +57,7 @@ ${builder.build({
     try {
         fs.writeFileSync(`${userAvatarFolderPath}/${req.params.userId}.xml`, output)
         res.send({
-            result: 1,
-            message: 'SUCCESS',
-            pageAuthor: 0
+            path: `${userAvatarFolderPath}/${req.params.userId}.xml`
         })
     } catch (err) {
         res.status(500).send({

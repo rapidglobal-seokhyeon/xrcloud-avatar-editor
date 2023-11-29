@@ -31,6 +31,11 @@ export const AvatarSaveButton: FunctionComponent<IProps> = (props) => {
                     formData,
                     {}
                 )
+                await axios.post(
+                    `${process.env.REA}${process.env.REACT_APP_API_END_POINT}/userNo=${userNo}&avatar=${res.data.path}`,
+                    {}
+                )
+
                 props.onSave()
             } else {
                 alert('export failed')
